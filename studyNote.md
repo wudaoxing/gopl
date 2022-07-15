@@ -1,4 +1,42 @@
-# 变量声明
+<!-- TOC -->
+
+- [go命令](#go命令)
+- [变量](#变量)
+- [if语句](#if语句)
+- [map](#map)
+- [函数make](#函数make)
+- [fmt包](#fmt包)
+- [bufio包](#bufio包)
+- [os包](#os包)
+- [strings包](#strings包)
+  - [strings.Split函数](#stringssplit函数)
+- [io/ioutil包](#ioioutil包)
+  - [ioutil.ReadFile函数](#ioutilreadfile函数)
+- [比较](#比较)
+
+<!-- /TOC -->
+* go语言原生支持Unicode，可以处理全世界任何语言的文本。
+  
+
+
+# go命令
+* Go语言提供的工具都通过一个单独的命令go调用
+* 子命令
+  * run 
+    编译一个或多个以.go结尾的源文件，链接库文件，并运行最终生成的可执行文件。
+    ```go
+    $ go run hello.go
+    ```
+  * build 
+    编译并保存编译结果。生成一个可执行的二进制文件，之后可随时运行，不需任何处理。
+    ```go
+    $ go build hello.go
+    $ ./hello
+    ```
+
+    
+# 变量
+* 函数和包级别的变量可以任意顺序声明，并不影响其被调用
 * 短变量声明
   ```go
   input := bufio.NewScanner(os.Stdin)
@@ -9,6 +47,11 @@
 * if语句的else部分是可选的
 
 # map
+```go
+    counts := make(map[string]int)
+```
+* map是一个由make函数创建的数据结构的引用
+  * 作为参数传递给某函数时，该函数接收这个引用的一份拷贝，被调用函数对map底层数据结构的任何修改，调用者函数都可以通过持有的map引用看到。
 * map存储了键/值（key/value）的集合
 * 对集合元素，提供常数时间的存、取或测试操作
 * 键可以是任意类型，只要其值能用==运算符比较
@@ -50,6 +93,12 @@
     * 换行符\n
   * 按照惯例，以字母f结尾的格式化函数，如log.Printf和fmt.Errorf，都采用fmt.Printf的格式化准则
   * 以ln结尾的格式化函数，则遵循Println的方式，以跟%v差不多的方式格式化参数，并在最后添加一个换行符
+* fmt.Fprintf函数
+  ```go
+  fmt.Fprintf(os.Stderr, "dup2:%v\n", err)
+  //使用Fprintf与表示任意类型默认格式值的动词%v，向标准错误流打印一条信息
+  ```
+
 # bufio包
 * 使处理输入和输出方便又高效
 * Scanner类型是该包最有用的特性之一
@@ -63,3 +112,25 @@
   * 每次调用input.Scan()，即读入下一行，并移除行末的换行符
     * Scan函数在读到一行时返回true，在无输入时返回false
   * 读取的内容可以调用input.Text()得到
+
+
+# os包
+* os.Open函数
+  * 返回两个值：
+    * 第一个是被打开的文件（*os.File）
+    * 第二个是内置error类型的值。
+      * 如果err等于内置值nil，那么文件被成功打开（可调用Close关闭该文件，释放资源）
+      * else则错误处理
+
+# strings包
+## strings.Split函数
+* 把字符串切割成子串的切片
+
+# io/ioutil包
+## ioutil.ReadFile函数
+* 读取指定文件的全部内容
+* 返回一个字节切片
+
+# 比较
+* bufio.Scanner、ioutil.ReadFile、ioutil.WriteFile
+  * 实现上，它们都使用*os.File的Read和Write方法
