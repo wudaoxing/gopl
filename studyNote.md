@@ -1,7 +1,11 @@
 <!-- TOC -->
 
+- [import](#import)
 - [go命令](#go命令)
+- [常量](#常量)
 - [变量](#变量)
+- [struct](#struct)
+- [复合声明](#复合声明)
 - [if语句](#if语句)
 - [map](#map)
 - [函数make](#函数make)
@@ -10,14 +14,24 @@
 - [os包](#os包)
 - [strings包](#strings包)
   - [strings.Split函数](#stringssplit函数)
-- [io/ioutil包](#ioioutil包)
-  - [ioutil.ReadFile函数](#ioutilreadfile函数)
+- [io包](#io包)
+  - [io/ioutil包](#ioioutil包)
+    - [ioutil.ReadFile函数](#ioutilreadfile函数)
+- [image包](#image包)
+  - [image/gif包](#imagegif包)
 - [比较](#比较)
 
 <!-- /TOC -->
-* go语言原生支持Unicode，可以处理全世界任何语言的文本。
-  
 
+
+
+
+* go语言原生支持Unicode，可以处理全世界任何语言的文本。
+* 将标准输出重定向到一个GIF图像文件
+  * 使用 ./lissajous > output.gif 命令
+  
+# import
+* 当importl一个包路径包含有多个单词的package时，比如image/color，通常只需要用最后那个单词表示这个包
 
 # go命令
 * Go语言提供的工具都通过一个单独的命令go调用
@@ -33,14 +47,36 @@
     $ go build hello.go
     $ ./hello
     ```
+# 常量
+```go
+const (
+	whiteIndex = 0 //first color in palette
+	blackIndex = 1 //next color in palette
+)
+```
+* 指在程序编译后运行时始终都不会变化的值
+* 常量声明和变量声明一般都会出现在包级别，所以这些常量在整个包中都是可以共享的
+* 也可以把常量声明定义在函数体内部，那么这种常量就只能在函数体内用。
+* 常量声明的值必须是一个数字值、字符串或者一个固定的boolean值
 
-    
 # 变量
 * 函数和包级别的变量可以任意顺序声明，并不影响其被调用
 * 短变量声明
   ```go
   input := bufio.NewScanner(os.Stdin)
   ```
+# struct
+* struct是一组值或者叫字段的集合，不同的类型集合在一个struct可以让我们以一个统一的单元进行处理。
+* struct内部的变量可以以一个点(.)来进行访问
+
+# 复合声明
+```go
+//生成一个slice切片
+var palette = []color.Color{color.White, color.Black}
+//生成一个struct变量，并且其内部变量LoopCount字段会被设置为nframes；而其它的字段会被设置为各自类型默认的零值
+anim := gif.GIF{LoopCount: nframes}
+```
+* 这是实例化Go语言里的复合类型的一种写法
 
 # if语句
 * 条件两边不加括号
@@ -126,10 +162,25 @@
 ## strings.Split函数
 * 把字符串切割成子串的切片
 
-# io/ioutil包
-## ioutil.ReadFile函数
+# io包
+* io.Writer类型
+  ```go
+  $ go build gopl.io/ch1/lissajous
+  $ ./lissajous >out.gif
+  ```
+  * 这个类型支持把输出结果写到很多目标
+## io/ioutil包
+### ioutil.ReadFile函数
 * 读取指定文件的全部内容
 * 返回一个字节切片
+
+# image包
+## image/gif包
+```go
+anim := gif.GIF{LoopCount: nframes}
+```
+* gif.GIF是一个struct类型
+
 
 # 比较
 * bufio.Scanner、ioutil.ReadFile、ioutil.WriteFile
